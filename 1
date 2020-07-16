@@ -1,0 +1,61 @@
+libname a'/folders/myfolders/';
+/* 创建一个libary 'a' */
+
+proc print data=a.tu_part1;
+run;
+/* 执行打印a中的tu_part1的数据 */
+
+data tu;
+	set a.tu_part1 a.tu_part2;
+run;
+/* 输入a中的tu_part1和a中的tu_part2合并输出到tu里 */
+
+data tu_first200;
+	set tu;
+	if _N_<=200;
+run;
+/* 输入tu中前200行数据输出到tu_first200中 */
+
+data tu_345;
+	set tu;
+	if _N_<=3 or _N_=4 or _N_=5;
+run;
+/* 输入tu中第3，4，5行数据输出到tu_345中 */
+
+data tmp;
+set tu;if _N_=10 then delete;
+run;
+/* 输入tu，删除第10个数据，输出到tmp中 */
+
+data tmp;
+set tu; if pid='A0000004' then delete;
+run;
+/* 输入tu删除pid='A0000004'这一行的数据，输出到tmp中 */
+
+/* delete是去掉行row */
+/* drop是去掉列columns */
+
+data tmp;
+set tu;drop num_trade_auto_1y;
+run;
+/* 输入tu，删除num_trade_auto_1y这一列的数据，输出到tmp中 */
+/* num_trade_auto是在过去一年中新开了多少个汽车贷款 */
+
+data tmp;
+set tu;keep num_trade_auto_1y;
+run;
+/* 输入tu，只保留num_trade_auto_1y这一列的数据，输出到tmp中 */
+
+/* Random Sampling */
+/* 上百万数据需要做sampling，降低数据size，数据空间变大，但处理时间变小 */
+
+proc surveyselect data=tu out=tu_sample samprate=0.2;
+run;
+/* 在tu中做随机抽样，输出到tu_sample中，sample down的比例为0.2,
+1000个数据在tu_sample中剩200个 */
+
+proc surveyselect data=tu_sample out=tu_samplesample samprate=0.3;
+run;
+/* 在tu_sample中再做随机抽样，输出到tu_samplesample中，sample down的比例为0.3，
+200个数据在tu_samplesample中剩60个 */
+
